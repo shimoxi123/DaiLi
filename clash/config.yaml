@@ -227,7 +227,7 @@ rules:
   # [域名匹配],[linux.do],[直连]
   - DOMAIN-SUFFIX,grok.com,香港
   - DOMAIN-SUFFIX,windows.net,香港
-  - DOMAIN-SUFFIX,linux.do,直连
+  - DOMAIN-SUFFIX,linux.do,香港
   - DOMAIN-SUFFIX,portal101.cn,直连
   - DOMAIN-SUFFIX,javasec.org,直连
   # [进程匹配],[Parallels Desktop],[漏网之鱼]
