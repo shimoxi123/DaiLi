@@ -259,9 +259,9 @@ rules:
   - DOMAIN-SUFFIX,shhimoxi.qzz.io,直连
   - DOMAIN-SUFFIX,jihulab.com,直连
   - DOMAIN-SUFFIX,shhimoxi.icu,直连
-  - DOMAIN-SUFFIX,shhimoxi.icu,直连
   - DOMAIN-SUFFIX,edgeone.ai,直连
   - DOMAIN-SUFFIX,yun.139.com,直连
+  - DOMAIN-SUFFIX,edgeone.run,直连
 
   # 没有匹配到规则的全部走[漏网之鱼]的这个规则
   - MATCH,漏网之鱼
