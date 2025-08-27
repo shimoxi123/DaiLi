@@ -500,5 +500,12 @@ const rules = [
   "RULE-SET,Gemini,Gemini",
   "RULE-SET,Claude,Claude",
   "RULE-SET,Github,HK",
-  "MATCH,Proxy"
+  "MATCH,Proxy",
+  // 新增
+  "DOMAIN-SUFFIX,shhimoxi.qzz.io,直连",
+  "DOMAIN-SUFFIX,jihulab.com,直连",
+  "DOMAIN-SUFFIX,shhimoxi.icu,直连",
+  "DOMAIN-SUFFIX,edgeone.ai,直连",
+  "DOMAIN-SUFFIX,yun.139.com,直连",
+  "DOMAIN-SUFFIX,edgeone.run,直连"
 ];
