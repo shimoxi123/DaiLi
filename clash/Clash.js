@@ -502,9 +502,9 @@ const rules = [
   "RULE-SET,Github,HK",
   "MATCH,Proxy",
   // 新增
-  "DOMAIN-SUFFIX,shhimoxi.qzz.io,DIRECT",
+  "DOMAIN-SUFFIX,shimoxi.qzz.io,DIRECT",
   "DOMAIN-SUFFIX,jihulab.com,DIRECT",
-  "DOMAIN-SUFFIX,shhimoxi.icu,DIRECT",
+  "DOMAIN-SUFFIX,shimoxi.icu,DIRECT",
   "DOMAIN-SUFFIX,edgeone.ai,DIRECT",
   "DOMAIN-SUFFIX,yun.139.com,DIRECT",
   "DOMAIN-SUFFIX,edgeone.run,DIRECT"
