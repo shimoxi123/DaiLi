@@ -265,5 +265,5 @@ rules:
   - DOMAIN-SUFFIX,rainyun.com,直连
   - DOMAIN-SUFFIX,rainapp.top,直连
 
-  # 没有匹配到规则的全部走[漏网之鱼]的这个规则
-  - MATCH,漏网之鱼
+  # 没有匹配到规则的全部走[直连]的这个规则
+  - MATCH,直连
