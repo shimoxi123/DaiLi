@@ -34,7 +34,7 @@ keep-alive-interval: 15
 keep-alive-idle: 15
 disable-keep-alive: true
 
-# dns配置
+# DNS配置
 dns:
   enable: true
   ipv6: true
@@ -62,11 +62,16 @@ dns:
   default-nameserver:
     - tls://223.5.5.5
     - tls://119.29.29.29
+  # 国内 DNS 优先，提高解析速度
   nameserver:
-    - https://1.1.1.1/dns-query
-    - https://dns.google.com/dns-query
+    - https://doh.pub/dns-query           # 国内（腾讯）
+    - https://dns.alidns.com/dns-query    # 国内（阿里）
+    - https://1.1.1.1/dns-query           # 国外（Cloudflare）
+    - https://dns.google.com/dns-query    # 国外（Google）
+  # 代理服务器域名解析
   proxy-server-nameserver:
     - https://doh.pub/dns-query
+  # 直连域名解析
   direct-nameserver:
     - https://doh.pub/dns-query
     - https://dns.alidns.com/dns-query
@@ -148,30 +153,53 @@ Fallback: &Fallback { type: fallback, interval: 300, tolerance: 50, url: 'https:
 
 # 代理组
 proxy-groups:
+  # === 核心代理组 ===
   - { name: 手动选择, <<: *SelectHK, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png, include-all: true }
   - { name: 自动选择, <<: *SelectALL, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png }
   - { name: GLOBAL, <<: *SelectDirect, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png, include-all: true }
+
+  # === 系统服务 ===
   - { name: Apple, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png }
-  - { name: BiliBili, <<: *SelectDirect, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili_4.png }
-  - { name: Claude, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/wanswu/my-backup@main/IconSet/AI/Claude.png }
-  - { name: Disney, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Disney.png }
-  - { name: Emby, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png }
-  - { name: Gemini, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/guaishouxiaoqi/icons@master/Color/Gemini.png }
-  - { name: Github, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png }
-  - { name: Google, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png }
-  - { name: Microsoft, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png }
-  - { name: Netflix, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png }
-  - { name: OpenAI, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png }
-  - { name: OneDrive, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png }
-  - { name: Steam, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png }
-  - { name: Spotify, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png }
-  - { name: TikTok, <<: *SelectTW, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png }
+
+  # === 通讯社交 ===
   - { name: Telegram, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png }
   - { name: Twitter, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png }
-  - { name: YouTube, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png}
+
+  # === AI 服务 ===
+  - { name: OpenAI, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png }
+  - { name: Gemini, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/guaishouxiaoqi/icons@master/Color/Gemini.png }
+  - { name: Claude, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/wanswu/my-backup@main/IconSet/AI/Claude.png }
+
+  # === 开发平台 ===
+  - { name: Github, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png }
+
+  # === 流媒体 ===
+  - { name: YouTube, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png }
+  - { name: BiliBili, <<: *SelectDirect, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili_4.png }
+  - { name: TikTok, <<: *SelectTW, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png }
+  - { name: Spotify, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png }
+  - { name: Netflix, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png }
+  - { name: Disney, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Disney.png }
+  - { name: Emby, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png }
+
+  # === 搜索引擎 ===
+  - { name: Google, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png }
+
+  # === 微软服务 ===
+  - { name: OneDrive, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png }
+  - { name: Microsoft, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png }
+
+  # === 游戏平台 ===
+  - { name: Steam, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png }
+
+  # === 社区论坛 ===
+  - { name: LinuxDo, type: select, proxies: [ 香港, DIRECT, 手动选择, 台湾, 日本, 韩国, 美国, 德国, 新加坡, 法国, 英国 ], icon: https://img.shimoxi.qzz.io/img/linux%20do-logo_2025110721_e85ac2b2b9f5adb3.png }
+
+  # === 其他 ===
   - { name: 漏网之鱼, <<: *SelectProxy, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png }
   - { name: 直连, <<: *SelectDirect, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png, hidden: true }
-  # 这里只匹配了一些常用地区的分组
+
+  # === 地区节点（自动测速） ===
   - { name: 香港, <<: *UrlTest, filter: 🇭🇰|香港|港|HK|hongkong|hong kong, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png }
   - { name: 澳门, <<: *UrlTest, filter: 🇲🇴|澳门|门|MO|macao, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Macao.png }
   - { name: 台湾, <<: *UrlTest, filter: 🇹🇼|台湾|台|TW|taiwan|taipei, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png }
@@ -188,7 +216,6 @@ proxy-groups:
   - { name: 泰国, <<: *UrlTest, filter: 🇹🇭|泰国|TH|thailand|bangkok, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Thailand.png }
   - { name: 澳洲, <<: *UrlTest, filter: 🇦🇺|澳大利亚|AU|australia|sydney, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Australia.png }
   - { name: 巴西, <<: *UrlTest, filter: 🇧🇷|巴西|brazil, icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Brazil.png }
-  # 除了常用的地区，其他地区都放这里
   - { name: 其他, <<: *UrlTest, filter: '(?i)^(?!.*(香港|台湾|日本|韩国|新加坡|美国|英国|德国|法国|印度|泰国|越南|印尼|澳大利亚|巴西|港|台|日|韩|新|美|英|德|法|印|泰|越|尼|澳|巴|hk|tw|jp|kr|sg|us|uk|de|fr|in|th|vn|id|au|br)).*', icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png }
 
 # 规则锚点，是为了减少重复配置
@@ -225,39 +252,55 @@ rule-providers:
 
 # 官方配置文档: https://wiki.metacubex.one/config/rules/
 rules:
-  # 额外添加的规则，佬友也可以自己添加，规则优先级为由上到下
-  # 介绍一下如何配置
-  # 匹配规则,分组,规则 例如下面这个
-  # [域名匹配],[linux.do],[直连]
-  # - DOMAIN-SUFFIX,windows.net,手动选择
-  # [进程匹配],[进程名称],[规则]
-  # - PROCESS-NAME,prl_naptd,漏网之鱼
-  # [规则匹配],[规则集],[规则],[不解析]  这里不使用GEOIP,private，是因为我测试下来感觉使用GEO会让clash内存变高所以就没使用了
+  # 需要特殊代理的域名（必须在 China 规则之前，避免被中国 IP/域名规则拦截）
+  - DOMAIN-SUFFIX,linux.do,LinuxDo
+
+  # 局域网和基础规则
   - RULE-SET,Lan,直连,no-resolve
   - RULE-SET,DNSLeak,手动选择
+
+  # 中国直连规则
   - RULE-SET,ChinaCustom,直连,no-resolve
   - RULE-SET,China,直连,no-resolve
+
+  # 服务规则（按类别分组）
+  # --- 系统服务 ---
+  - RULE-SET,Apple,Apple
+
+  # --- 通讯社交 ---
   - RULE-SET,Telegram,Telegram
+  - RULE-SET,Twitter,Twitter
+
+  # --- AI 服务 ---
+  - RULE-SET,OpenAI,OpenAI
   - RULE-SET,Gemini,Gemini
-  - RULE-SET,Google,Google
+  - RULE-SET,Claude,Claude
+
+  # --- 开发平台 ---
   - RULE-SET,Github,Github
+
+  # --- 流媒体 ---
   - RULE-SET,YouTube,YouTube
   - RULE-SET,BiliBili,BiliBili
-  - RULE-SET,OneDrive,OneDrive
-  - RULE-SET,Microsoft,Microsoft
   - RULE-SET,TikTok,TikTok
   - RULE-SET,Spotify,Spotify
   - RULE-SET,Netflix,Netflix
   - RULE-SET,Disney,Disney
-  - RULE-SET,OpenAI,OpenAI
-  - RULE-SET,Twitter,Twitter
-  - RULE-SET,Claude,Claude
-  - RULE-SET,Steam,Steam
   - RULE-SET,Emby,Emby
-  # 新增
+
+  # --- 搜索引擎 ---
+  - RULE-SET,Google,Google
+
+  # --- 微软服务 ---
+  - RULE-SET,OneDrive,OneDrive
+  - RULE-SET,Microsoft,Microsoft
+
+  # --- 游戏平台 ---
+  - RULE-SET,Steam,Steam
+
+  # 自定义直连域名（解析到中国 IP，可以被 China 规则自动处理，但为了明确保持独立）
   - DOMAIN-SUFFIX,shimoxi.qzz.io,直连
   - DOMAIN-SUFFIX,jihulab.com,直连
-  - DOMAIN-SUFFIX,shimoxi.icu,直连
   - DOMAIN-SUFFIX,edgeone.ai,直连
   - DOMAIN-SUFFIX,yun.139.com,直连
   - DOMAIN-SUFFIX,edgeone.run,直连
@@ -266,6 +309,8 @@ rules:
   - DOMAIN-SUFFIX,pushplus.plus,直连
   - DOMAIN-SUFFIX,qinglong.online,直连
 
+  # 劫持防护
   - RULE-SET,Hijacking,DIRECT
-  # 没有匹配到规则的全部走[漏网之鱼]的这个规则
+
+  # 默认规则（必须在最后）
   - MATCH,漏网之鱼
