@@ -4,28 +4,7 @@
  * URL: https://github.com/wanswu/my-backup
  */
 
-// 多订阅合并，这里添加额外的地址
-const proxyProviders = {
-  "p1": {
-    "type": "http",
-    // 订阅 链接
-    "url": "https://baidu.com",
-    // 自动更新时间 86400(秒) / 3600 = 24小时
-    "interval": 86400,
-    "override": {
-      // 节点名称前缀 p1，用于区别机场节点
-      "additional-prefix": "p1 |"
-    }
-  },
-  "p2": {
-    "type": "http",
-    "url": "https://google.com",
-    "interval": 86400,
-    "override": {
-      "additional-prefix": "p2 |"
-    }
-  },
-}
+// 多订阅合并功能已移除
 
 // 程序入口
 function main(config) {
@@ -37,11 +16,6 @@ function main(config) {
     throw new Error("配置文件中未找到任何代理");
   }
 
-  // 合并而非覆盖
-  config["proxy-providers"] = {
-    ...originalProviders,  // 保留原有配置
-    ...proxyProviders       // 合并新配置（同名则覆盖）
-  };
   // 覆盖原配置中DNS配置
   config["dns"] = dnsConfig;
   // 覆盖原配置中的代理组
@@ -178,6 +152,15 @@ const proxyGroupConfig = [
   },
   {
     ...groupBaseOption,
+    "name": "Github",
+    "type": "select",
+    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
+    "include-all": true,
+    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
+    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png"
+  },
+  {
+    ...groupBaseOption,
     "name": "TikTok",
     "type": "select",
     "proxies": ["Proxy", "TW", "HK", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
@@ -265,6 +248,24 @@ const proxyGroupConfig = [
     "include-all": true,
     "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png"
+  },
+  {
+    ...groupBaseOption,
+    "name": "LinuxDo",
+    "type": "select",
+    "proxies": ["HK", "DIRECT", "Proxy", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
+    "include-all": true,
+    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
+    "icon": "https://img.shimoxi.qzz.io/img/linux%20do-logo_2025110721_e85ac2b2b9f5adb3.png"
+  },
+  {
+    ...groupBaseOption,
+    "name": "Others",
+    "type": "select",
+    "proxies": ["Proxy", "DIRECT", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "REJECT"],
+    "include-all": true,
+    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
+    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png"
   },
   {
     ...groupBaseOption,
@@ -477,12 +478,18 @@ const rules = [
   'GEOIP,CN,DIRECT',
   'DOMAIN-SUFFIX,yunaq.com,DIRECT',
   'DOMAIN-SUFFIX,jiashule.com,DIRECT',
-  'DOMAIN-SUFFIX,linux.do,DIRECT',
+  'DOMAIN-SUFFIX,linux.do,LinuxDo',
   'DOMAIN-SUFFIX,deepseek.com,DIRECT',
   'DOMAIN-SUFFIX,volces.com,DIRECT',
   'DOMAIN-SUFFIX,portal101.cn,DIRECT',
   'DOMAIN-SUFFIX,ephone.ai,DIRECT',
   'DOMAIN-SUFFIX,pcbeta.com,DIRECT',
+  'DOMAIN-SUFFIX,shimoxi.qzz.io,DIRECT',
+  'DOMAIN-SUFFIX,jihulab.com,DIRECT',
+  'DOMAIN-SUFFIX,edgeone.ai,DIRECT',
+  'DOMAIN-SUFFIX,yun.139.com,DIRECT',
+  'DOMAIN-SUFFIX,edgeone.run,DIRECT',
+  // 服务规则
   "RULE-SET,Telegram,Telegram",
   "RULE-SET,YouTube,YouTube",
   "RULE-SET,BiliBili,BiliBili",
@@ -499,13 +506,7 @@ const rules = [
   "RULE-SET,Emby,Emby",
   "RULE-SET,Gemini,Gemini",
   "RULE-SET,Claude,Claude",
-  "RULE-SET,Github,HK",
-  "MATCH,Proxy",
-  // 新增
-  "DOMAIN-SUFFIX,shimoxi.qzz.io,DIRECT",
-  "DOMAIN-SUFFIX,jihulab.com,DIRECT",
-  "DOMAIN-SUFFIX,shimoxi.icu,DIRECT",
-  "DOMAIN-SUFFIX,edgeone.ai,DIRECT",
-  "DOMAIN-SUFFIX,yun.139.com,DIRECT",
-  "DOMAIN-SUFFIX,edgeone.run,DIRECT"
+  "RULE-SET,Github,Github",
+  // 默认规则（必须在最后）
+  "MATCH,Proxy"
 ];
