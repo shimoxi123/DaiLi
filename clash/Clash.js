@@ -260,15 +260,6 @@ const proxyGroupConfig = [
   },
   {
     ...groupBaseOption,
-    "name": "Others",
-    "type": "select",
-    "proxies": ["Proxy", "DIRECT", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "REJECT"],
-    "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
-    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png"
-  },
-  {
-    ...groupBaseOption,
     "name": "HK",
     "type": "url-test",
     "include-all": true,
