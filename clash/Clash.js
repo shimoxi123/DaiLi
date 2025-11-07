@@ -6,6 +6,15 @@
 
 // 多订阅合并功能已移除
 
+// 通用配置常量
+const GENERAL_CONFIG = {
+  "mixed-port": 7890,
+  "allow-lan": true,
+  "bind-address": "*",
+  "ipv6": true,
+  "unified-delay": true
+};
+
 // 程序入口
 function main(config) {
   const proxyCount = config?.proxies?.length ?? 0;
@@ -23,12 +32,8 @@ function main(config) {
   // 覆盖原配置中的规则
   config["rule-providers"] = ruleProviders;
   config["rules"] = rules;
-  //覆盖通用配置
-  config["mixed-port"] = 7890;
-  config["allow-lan"] = true;
-  config["bind-address"] = "*";
-  config["ipv6"] = true;
-  config["unified-delay"] = true;
+  // 覆盖通用配置
+  Object.assign(config, GENERAL_CONFIG);
   // 返回修改后的配置
   return config;
 }
@@ -56,10 +61,15 @@ const dnsConfig = {
   ],
   "use-hosts": false,
   "use-system-hosts": false,
-  "nameserver": ["https://1.1.1.1/dns-query", "https://dns.google/dns-query"], // 默认的域名解析服务器
-  "default-nameserver": ["tls://223.5.5.5", "tls://119.29.29.29"],  //默认DNS 用于解析 DNS服务器 的域名
-  "proxy-server-nameserver": ['https://doh.pub/dns-query'],
-  "direct-nameserver": ['https://doh.pub/dns-query','https://dns.alidns.com/dns-query'],   //用于 direct 出口域名解析的 DNS 服务器
+  "nameserver": [
+    "https://doh.pub/dns-query",           // 国内（腾讯）
+    "https://dns.alidns.com/dns-query",    // 国内（阿里）
+    "https://1.1.1.1/dns-query",           // 国外（Cloudflare）
+    "https://dns.google/dns-query"         // 国外（Google）
+  ],
+  "default-nameserver": ["tls://223.5.5.5", "tls://119.29.29.29"],  // 用于解析 DNS 服务器的域名
+  "proxy-server-nameserver": ["https://doh.pub/dns-query"],         // 代理服务器域名解析
+  "direct-nameserver": ["https://doh.pub/dns-query", "https://dns.alidns.com/dns-query"]  // 直连域名解析
 };
 // 代理组通用配置
 const groupBaseOption = {
@@ -67,16 +77,19 @@ const groupBaseOption = {
   "timeout": 3000,
   "url": "https://www.gstatic.com/generate_204",
   "max-failed-times": 3,
-  "hidden": false
+  "hidden": false,
+  "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置"
 };
 // 代理组规则
 const proxyGroupConfig = [
+  // === 核心代理组 ===
   {
     ...groupBaseOption,
     "name": "Proxy",
     "type": "select",
     "proxies": ["AUTO", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT", "REJECT"],
     "include-all": true,
+    "exclude-filter": undefined,  // 包含所有节点，不过滤
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png"
   },
   {
@@ -84,52 +97,46 @@ const proxyGroupConfig = [
     "name": "AUTO",
     "type": "url-test",
     "include-all": true,
+    "exclude-filter": undefined,  // 包含所有节点，不过滤
     "tolerance": 50,
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Speedtest.png"
   },
+
+  // === 系统服务 ===
   {
     ...groupBaseOption,
     "name": "Apple",
     "type": "select",
     "proxies": ["DIRECT", "Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "REJECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Apple.png"
   },
+
+  // === 通讯社交 ===
   {
     ...groupBaseOption,
     "name": "Telegram",
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT", "REJECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png"
   },
   {
     ...groupBaseOption,
-    "name": "YouTube",
+    "name": "Twitter",
     "type": "select",
-    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT", "REJECT"],
+    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
-    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png"
+    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png"
   },
-  {
-    ...groupBaseOption,
-    "name": "BiliBili",
-    "type": "select",
-    "proxies": ["DIRECT", "Proxy", "REJECT", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
-    "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
-    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili.png"
-  },
+
+  // === AI 服务 ===
   {
     ...groupBaseOption,
     "name": "OpenAI",
     "type": "select",
     "proxies": ["Proxy", "US", "TW", "JP", "KR", "HK", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ChatGPT.png"
   },
   {
@@ -138,7 +145,6 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/guaishouxiaoqi/icons@master/Color/Gemini.png"
   },
   {
@@ -147,17 +153,35 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["Proxy", "US", "TW", "JP", "KR", "HK", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/ke1ewang/Qi@master/Claude.png"
   },
+
+  // === 开发平台 ===
   {
     ...groupBaseOption,
     "name": "Github",
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png"
+  },
+
+  // === 流媒体 ===
+  {
+    ...groupBaseOption,
+    "name": "YouTube",
+    "type": "select",
+    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT", "REJECT"],
+    "include-all": true,
+    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png"
+  },
+  {
+    ...groupBaseOption,
+    "name": "BiliBili",
+    "type": "select",
+    "proxies": ["DIRECT", "Proxy", "REJECT", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
+    "include-all": true,
+    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili.png"
   },
   {
     ...groupBaseOption,
@@ -165,7 +189,6 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["Proxy", "TW", "HK", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png"
   },
   {
@@ -174,7 +197,6 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png"
   },
   {
@@ -183,7 +205,6 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png"
   },
   {
@@ -192,25 +213,34 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Disney.png"
   },
+  {
+    ...groupBaseOption,
+    "name": "Emby",
+    "type": "select",
+    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
+    "include-all": true,
+    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png"
+  },
+
+  // === 搜索引擎 ===
   {
     ...groupBaseOption,
     "name": "Google",
     "type": "select",
     "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Google_Search.png"
   },
+
+  // === 微软服务 ===
   {
     ...groupBaseOption,
     "name": "OneDrive",
     "type": "select",
     "proxies": ["DIRECT", "Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/OneDrive.png"
   },
   {
@@ -219,45 +249,30 @@ const proxyGroupConfig = [
     "type": "select",
     "proxies": ["DIRECT", "Proxy", "REJECT", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Microsoft.png"
   },
-  {
-    ...groupBaseOption,
-    "name": "Twitter",
-    "type": "select",
-    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
-    "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
-    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Twitter.png"
-  },
-  {
-    ...groupBaseOption,
-    "name": "Emby",
-    "type": "select",
-    "proxies": ["Proxy", "HK", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK", "DIRECT"],
-    "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
-    "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Emby.png"
-  },
+
+  // === 游戏平台 ===
   {
     ...groupBaseOption,
     "name": "Steam",
     "type": "select",
     "proxies": ["Proxy", "HK", "DIRECT", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png"
   },
+
+  // === 社区论坛 ===
   {
     ...groupBaseOption,
     "name": "LinuxDo",
     "type": "select",
     "proxies": ["HK", "DIRECT", "Proxy", "TW", "JP", "KR", "US", "DE", "SG", "FR", "UK"],
     "include-all": true,
-    "exclude-filter": "(?i)GB|Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "icon": "https://img.shimoxi.qzz.io/img/linux%20do-logo_2025110721_e85ac2b2b9f5adb3.png"
   },
+
+  // === 地区节点（自动测速） ===
   {
     ...groupBaseOption,
     "name": "HK",
@@ -336,7 +351,6 @@ const proxyGroupConfig = [
     "type": "url-test",
     "include-all": true,
     "filter": "英国|GB|🇬🇧",
-    "exclude-filter": "Traffic|Expire|Premium|频道|订阅|ISP|流量|到期|重置",
     "tolerance": 50,
     "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_Kingdom.png"
   }
@@ -464,12 +478,16 @@ const ruleProviders = {
 
 // 规则
 const rules = [
-  // 自定义规则
+  // 需要特殊代理的域名（必须在 GEOIP 之前，避免被中国 IP 规则拦截）
+  'DOMAIN-SUFFIX,linux.do,LinuxDo',
+
+  // 自动直连规则
   'GEOIP,private,DIRECT',
   'GEOIP,CN,DIRECT',
+
+  // 其他直连域名（中国 IP，可以被 GEOIP,CN 自动处理）
   'DOMAIN-SUFFIX,yunaq.com,DIRECT',
   'DOMAIN-SUFFIX,jiashule.com,DIRECT',
-  'DOMAIN-SUFFIX,linux.do,LinuxDo',
   'DOMAIN-SUFFIX,deepseek.com,DIRECT',
   'DOMAIN-SUFFIX,volces.com,DIRECT',
   'DOMAIN-SUFFIX,portal101.cn,DIRECT',
@@ -480,7 +498,9 @@ const rules = [
   'DOMAIN-SUFFIX,edgeone.ai,DIRECT',
   'DOMAIN-SUFFIX,yun.139.com,DIRECT',
   'DOMAIN-SUFFIX,edgeone.run,DIRECT',
+
   // 服务规则
+  "RULE-SET,Apple,Apple",
   "RULE-SET,Telegram,Telegram",
   "RULE-SET,YouTube,YouTube",
   "RULE-SET,BiliBili,BiliBili",
@@ -498,6 +518,7 @@ const rules = [
   "RULE-SET,Gemini,Gemini",
   "RULE-SET,Claude,Claude",
   "RULE-SET,Github,Github",
+
   // 默认规则（必须在最后）
   "MATCH,Proxy"
 ];
