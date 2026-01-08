@@ -499,6 +499,7 @@ const rules = [
   'DOMAIN-SUFFIX,yun.139.com,DIRECT',
   'DOMAIN-SUFFIX,edgeone.run,DIRECT',
   'DOMAIN-SUFFIX,tencentcloud,DIRECT',
+  'DOMAIN-SUFFIX,archlinuxcn.org,DIRECT',
 
   // 服务规则
   "RULE-SET,Apple,Apple",
