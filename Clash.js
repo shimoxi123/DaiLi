@@ -1,10 +1,37 @@
 // 通用配置常量
 const GENERAL_CONFIG = {
+  "mode": "rule",
   "mixed-port": 7890,
   "allow-lan": true,
-  "bind-address": "*",
   "ipv6": true,
-  "unified-delay": true
+  "unified-delay": true,
+  "log-level": "error",
+  "find-process-mode": "strict",
+  "tcp-concurrent": true,
+  "disable-keep-alive": true,
+  "profile": {
+    "store-selected": true,
+    "store-fake-ip": true
+  },
+  "geodata-mode": true,
+  "geo-auto-update": true,
+  "geo-update-interval": 24,
+  "geodata-loader": "memconservative",
+  "geox-url": {
+    "geoip":   "https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/geoip.dat",
+    "geosite": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat",
+    "mmdb":    "https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/Country.mmdb",
+    "asn":     "https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb"
+  },
+  "ntp": {
+    "enable": true,
+    "write-to-system": false,
+    "server": "ntp1.aliyun.com",
+    "port": 123,
+    "interval": 30
+  },
+  "tun":     { "enable": false },
+  "sniffer": { "enable": false }
 };
 
 // 程序入口
@@ -25,8 +52,6 @@ function main(config) {
 const dnsConfig = {
   "enable": true,
   "ipv6": true,
-  "listen": ":53",
-  "prefer-h3": false,
   "respect-rules": true,
   "enhanced-mode": "fake-ip",
   "fake-ip-range": "198.18.0.1/16",
@@ -37,7 +62,15 @@ const dnsConfig = {
     "+.msftncsi.com",
     "localhost.ptlogin2.qq.com",
     "localhost.sec.qq.com",
-    "localhost.work.weixin.qq.com"
+    "localhost.work.weixin.qq.com",
+    "market.xiaomi.com",
+    "*.xiaomi.com",
+    "*.mi.com",
+    "*.miui.com",
+    "*.xiaomi.net",
+    "*.mi.net",
+    "*.miui.net",
+    "*.pcbeta.com"
   ],
   "use-hosts": false,
   "use-system-hosts": false,

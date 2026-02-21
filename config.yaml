@@ -21,6 +21,7 @@ dns:
   enable: true
   ipv6: true
   prefer-h3: false
+  respect-rules: true
   use-hosts: false
   use-system-hosts: false
   enhanced-mode: fake-ip
