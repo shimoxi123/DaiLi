@@ -1,0 +1,4 @@
+# 补充直连域名
+payload:
+  - DOMAIN-SUFFIX,qianxin.com
+  - DOMAIN-SUFFIX,fastadmin.net
