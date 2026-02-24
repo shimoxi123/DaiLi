@@ -460,6 +460,10 @@ const rules = [
   // 劫持防护
   "RULE-SET,Hijacking,DIRECT",
 
+  // 中国兜底规则（覆盖 direct.txt 未收录的国内域名/IP）
+  "GEOSITE,cn,DIRECT",
+  "GEOIP,CN,DIRECT,no-resolve",
+
   // 默认规则（必须在最后）
   "MATCH,Proxy"
 ];

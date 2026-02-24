@@ -3,7 +3,7 @@
 # REPO: https://github.com/shimoxi123/DaiLi
 # DATE: 2025/09/09
 payload:
-  - IP-CIDR,142.251.215.0/24,no-resolves
+  - IP-CIDR,142.251.215.0/24,no-resolve
   - DOMAIN-SUFFIX,checkip.dyndns.org
   - DOMAIN-SUFFIX,checkip.dyndns.com
   - DOMAIN-SUFFIX,test-ipv6.com
