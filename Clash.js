@@ -426,6 +426,15 @@ const rules = [
   // 特殊路由（linux.do 解析到国际 IP，须在中国规则之前）
   "DOMAIN-SUFFIX,linux.do,LinuxDo",
 
+  // 本地地址直连（loopback / 私有网段 / 链路本地）
+  "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
+  "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
+  "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
+  "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
+  "IP-CIDR,169.254.0.0/16,DIRECT,no-resolve",
+  "IP-CIDR6,::1/128,DIRECT,no-resolve",
+  "IP-CIDR6,fc00::/7,DIRECT,no-resolve",
+
   // 局域网直连
   "RULE-SET,lancidr,DIRECT,no-resolve",
 

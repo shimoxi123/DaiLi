@@ -241,6 +241,15 @@ rules:
   # 需要特殊代理的域名（必须在 China 规则之前，避免被中国 IP/域名规则拦截）
   - DOMAIN-SUFFIX,linux.do,LinuxDo
 
+  # 本地地址直连（loopback / 私有网段 / 链路本地）
+  - IP-CIDR,127.0.0.0/8,直连,no-resolve
+  - IP-CIDR,10.0.0.0/8,直连,no-resolve
+  - IP-CIDR,172.16.0.0/12,直连,no-resolve
+  - IP-CIDR,192.168.0.0/16,直连,no-resolve
+  - IP-CIDR,169.254.0.0/16,直连,no-resolve
+  - IP-CIDR6,::1/128,直连,no-resolve
+  - IP-CIDR6,fc00::/7,直连,no-resolve
+
   # 局域网和基础规则
   - RULE-SET,lancidr,直连,no-resolve
   - RULE-SET,DNSLeak,手动选择
@@ -249,6 +258,10 @@ rules:
   - RULE-SET,ChinaCustom,直连
   - RULE-SET,direct,直连
   - RULE-SET,cncidr,直连,no-resolve
+
+  # 中国兜底规则（覆盖 direct.txt 未收录的国内域名/IP）
+  - GEOSITE,cn,DIRECT
+  - GEOIP,CN,DIRECT,no-resolve
 
   # 服务规则（按类别分组）
   # --- 系统服务 ---
